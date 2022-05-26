@@ -14,11 +14,11 @@
                     </div>
                 </div>
                 <div class='main-content-result'>
-                        <div class="main-content-result-card" v-for="(item, index) in address" v-bind:key = "item">
+                        <div class="main-content-result-card" v-for="(item, index) in address" v-bind:key = "index">
                             <div class='main-content-result-card-left'>
                                 <img src="@/assets/icone-lugar.svg" alt="Ícone de Localização">
                                <div class='main-content-result-card-left-info'>
-                                   <h3>{{item.logradouro}}, {{item.complemento}}, {{item.bairro}}</h3>
+                                   <h3>{{item.logradouro}}, {{item.bairro}}</h3>
                                    <p>{{item.localidade}} - {{item.uf}}</p>
                                </div> 
                             </div>
@@ -49,25 +49,38 @@ export default {
     },
     methods:{
         addCep(){
-               this.ceps.push(this.cep)
+                const cepString = this.cep + ''
+              if(cepString.length <=8){
+                  this.ceps.push(this.cep)
+              }else{
+                  alert("O cep não pode possuir mais que 8 caracteres")
+              }
+                
         },
         getCep(){
-                for(const cep of this.ceps){
+                const notDuplicatedCeps = [...new Set(this.ceps)]
+                for(const cep of notDuplicatedCeps){ // Não Gera Ceps duplicados.
                     this.getAddress(cep)
-                }       
+                }
+                this.ceps = [];       
         },
         async getAddress(cep){
-            const link = `https://viacep.com.br/ws/${cep}/json/`
+            try{
+                const link = `https://viacep.com.br/ws/${cep}/json/`
 
-            const response = await fetch(link)
-            const responseJSON = await response.json();
+                const response = await fetch(link)
+                const responseJSON = await response.json();
 
-            return this.address.push(responseJSON) ;
+                return this.address.push(responseJSON) ;
+            }catch(error){
+                alert("Algum do(s) endereço(s) não foram encontrado(s)")
+            }
+            
         },
         deleteAddress(index){
-            this.address.splice(index)
+            this.address.splice(index,1)
         }
-    }
+    },
 }
 </script>
 

@@ -41,6 +41,7 @@ ul{
 img{
   max-width: 100%;
   display: block;
+  cursor: pointer;
 }
 
 .btn{
@@ -54,5 +55,12 @@ img{
     cursor: pointer;
 }
 
+.v-enter-from{
+  opacity: 0;
+  transform: translate3d(-20px,0,0)
+}
+.v-enter-active{
+  transition: all 0.3s
+}
 
 </style>

@@ -1,6 +1,6 @@
-export default async function getAddresses(cep){
+export default async function getAddresses(zipcode){
     try{
-        const link = `https://viacep.com.br/ws/${cep}/json/`
+        const link = `https://viacep.com.br/ws/${zipcode}/json/`
 
         const response = await fetch(link)
         const responseJSON = await response.json();

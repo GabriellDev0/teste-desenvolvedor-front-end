@@ -6,14 +6,19 @@
                     <div class='main-content-form-info'>
                         <input class='main-content-input-cep' v-model="zipcode" type="number" placeholder="Insira o CEP">
                         <button class='main-content-form btn' @click.prevent="addCep">Adicionar Endereço</button>
+                       
+                       <transition-group>
                         <div  v-for="(item) in zipcodes" v-bind:key = "item" class="main-content-form-cep">
                                 <img src="@/assets/icone-lugar.svg" alt="Ícone de Localização">
                                 <p class='main-content-form-cep-text'><span>CEP </span>{{item}}</p>
+                             
                         </div>
+                      </transition-group>   
                         <button class='main-content-form-gerate-address btn' @click.prevent="getCep">Gerar Endereços</button>
                     </div>
                 </div>
                 <div class='main-content-result'>
+                    <transition-group>
                         <div class="main-content-result-card" v-for="(item, index) in addresses" v-bind:key = "index">
                             <div class='main-content-result-card-left'>
                                 <img src="@/assets/icone-lugar.svg" alt="Ícone de Localização">
@@ -27,6 +32,7 @@
                                 <img @click.prevent="deleteAddresses(index)" src="@/assets/icone-lixo.svg" alt="Ícone de demonstração para excluir o item. Uma lixeira.">
                             </div>      
                         </div>
+                    </transition-group>   
                 </div>  
             </div>
         </main>
@@ -34,7 +40,7 @@
 
 <script>
 import TheSideBar from "@/components/TheSideBar.vue";
-
+import getAddresses from "@/repository.js"
 
 export default {
     name: "TheMain",
@@ -51,34 +57,22 @@ export default {
     methods:{
         addCep(){
                 const cepString = this.zipcode + ''
-              if(cepString.length <=8){
+              if(cepString.length <=8 || cepString.length == ''){
                   this.zipcodes.push(this.zipcode)
               }else{
                   alert("O cep não pode possuir mais que 8 caracteres")
               }
                 
         },
-        getCep(){
+       async getCep(){
                 let notDuplicatedCeps = [...new Set(this.zipcodes)]
-                for(const cep of notDuplicatedCeps){ // Não Gera Ceps duplicados na remessa.
-                    this.getAddresses(cep)
+                for(const zipcode of notDuplicatedCeps){ // Não Gera Ceps duplicados na remessa.
+                    const address = await getAddresses(zipcode)
+                    this.addresses.push(address)
                 }
                 this.zipcodes = [];   
                    
         },
-        async getAddresses(cep){
-              try{
-            const link = `https://viacep.com.br/ws/${cep}/json/`
-
-            const response = await fetch(link)
-            const responseJSON = await response.json();
-
-            return this.addresses.push(responseJSON) ;
-        }catch(error){
-            alert("Algum do(s) endereço(s) não foram encontrado(s)")
-        }
-
-    },
         deleteAddresses(index){
             this.addresses.splice(index,1)
         }
@@ -217,5 +211,4 @@ input::-webkit-inner-spin-button {
 input[type=number] {
   -moz-appearance: textfield;
 }
-
 </style>

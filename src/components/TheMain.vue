@@ -4,9 +4,9 @@
             <div class='main-content'>
                 <div class='main-content-form'>
                     <div class='main-content-form-info'>
-                        <input class='main-content-input-cep' v-model="cep" type="number" placeholder="Insira o CEP">
+                        <input class='main-content-input-cep' v-model="zipcode" type="number" placeholder="Insira o CEP">
                         <button class='main-content-form btn' @click.prevent="addCep">Adicionar Endereço</button>
-                        <div  v-for="(item) in ceps" v-bind:key = "item" class="main-content-form-cep">
+                        <div  v-for="(item) in zipcodes" v-bind:key = "item" class="main-content-form-cep">
                                 <img src="@/assets/icone-lugar.svg" alt="Ícone de Localização">
                                 <p class='main-content-form-cep-text'><span>CEP </span>{{item}}</p>
                         </div>
@@ -14,7 +14,7 @@
                     </div>
                 </div>
                 <div class='main-content-result'>
-                        <div class="main-content-result-card" v-for="(item, index) in address" v-bind:key = "index">
+                        <div class="main-content-result-card" v-for="(item, index) in addresses" v-bind:key = "index">
                             <div class='main-content-result-card-left'>
                                 <img src="@/assets/icone-lugar.svg" alt="Ícone de Localização">
                                <div class='main-content-result-card-left-info'>
@@ -24,7 +24,7 @@
                             </div>
                             <div class='main-content-result-card-right'>
                                 <p>{{item.cep}}</p>
-                                <img @click.prevent="deleteAddress(index)" src="@/assets/icone-lixo.svg" alt="Ícone de demonstração para excluir o item. Uma lixeira.">
+                                <img @click.prevent="deleteAddresses(index)" src="@/assets/icone-lixo.svg" alt="Ícone de demonstração para excluir o item. Uma lixeira.">
                             </div>      
                         </div>
                 </div>  
@@ -35,6 +35,7 @@
 <script>
 import TheSideBar from "@/components/TheSideBar.vue";
 
+
 export default {
     name: "TheMain",
     components:{
@@ -42,43 +43,44 @@ export default {
     },
     data(){
         return{
-            cep: null,
-            ceps: [],
-            address: [],
+            zipcode: null,
+            zipcodes: [],
+            addresses: [],
         }
     },
     methods:{
         addCep(){
-                const cepString = this.cep + ''
+                const cepString = this.zipcode + ''
               if(cepString.length <=8){
-                  this.ceps.push(this.cep)
+                  this.zipcodes.push(this.zipcode)
               }else{
                   alert("O cep não pode possuir mais que 8 caracteres")
               }
                 
         },
         getCep(){
-                const notDuplicatedCeps = [...new Set(this.ceps)]
-                for(const cep of notDuplicatedCeps){ // Não Gera Ceps duplicados.
-                    this.getAddress(cep)
+                let notDuplicatedCeps = [...new Set(this.zipcodes)]
+                for(const cep of notDuplicatedCeps){ // Não Gera Ceps duplicados na remessa.
+                    this.getAddresses(cep)
                 }
-                this.ceps = [];       
+                this.zipcodes = [];   
+                   
         },
-        async getAddress(cep){
-            try{
-                const link = `https://viacep.com.br/ws/${cep}/json/`
+        async getAddresses(cep){
+              try{
+            const link = `https://viacep.com.br/ws/${cep}/json/`
 
-                const response = await fetch(link)
-                const responseJSON = await response.json();
+            const response = await fetch(link)
+            const responseJSON = await response.json();
 
-                return this.address.push(responseJSON) ;
-            }catch(error){
-                alert("Algum do(s) endereço(s) não foram encontrado(s)")
-            }
-            
-        },
-        deleteAddress(index){
-            this.address.splice(index,1)
+            return this.addresses.push(responseJSON) ;
+        }catch(error){
+            alert("Algum do(s) endereço(s) não foram encontrado(s)")
+        }
+
+    },
+        deleteAddresses(index){
+            this.addresses.splice(index,1)
         }
     },
 }

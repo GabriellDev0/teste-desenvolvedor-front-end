@@ -1,30 +1,58 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
   <router-view/>
 </template>
 
 <style>
+:root{
+  --neutral-color-primary: #FFFFFF;
+  --neutral-color-secundary: #F6F6F6;
+  --neutral-color-tertiary: #E5E5E5;
+  --neutral-color-tertiary2: #75818C;
+
+  --primary-color: #B600EE;
+  --tertiary-color: #9206E9;
+
+  --single-color: #20272C;
+
+  --font-normal: 400;
+  --font-bold:  700;
+
+  --font-sizeP: font-size: 0.75rem;
+  --font-sizeM: font-size: 1rem;
+  --font-sizeG: font-size: 1.25rem;
+}
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+  font-family: 'Open Sans';
 }
 
-nav {
-  padding: 30px;
+*{
+  box-sizing: border-box;
 }
 
-nav a {
-  font-weight: bold;
-  color: #2c3e50;
+body, ul, li, h1, h2, p{
+  padding: 0px;
+  margin: 0px;
 }
 
-nav a.router-link-exact-active {
-  color: #42b983;
+ul{
+  list-style: none;
 }
+
+img{
+  max-width: 100%;
+  display: block;
+}
+
+.btn{
+    padding: 15px 60px 15px 60px;
+    font-size: var(--font-sizeM);
+    color: var(--neutral-color-primary);
+    background-color: var(--primary-color);
+    border-radius: 10px;
+    border: none;
+    text-align: center;
+    cursor: pointer;
+}
+
+
 </style>

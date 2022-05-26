@@ -6,7 +6,7 @@
                     <div class='main-content-form-info'>
                         <input class='main-content-input-cep' v-model="cep" type="number" placeholder="Insira o CEP">
                         <button class='main-content-form btn' @click.prevent="addCep">Adicionar Endereço</button>
-                        <div  v-for="(item) in resultObject" v-bind:key = "item" class="main-content-form-cep">
+                        <div  v-for="(item) in ceps" v-bind:key = "item" class="main-content-form-cep">
                                 <img src="@/assets/icone-lugar.svg" alt="Ícone de Localização">
                                 <p class='main-content-form-cep-text'><span>CEP </span>{{item}}</p>
                         </div>
@@ -14,19 +14,17 @@
                     </div>
                 </div>
                 <div class='main-content-result'>
-                        <div class="main-content-result-card">
+                        <div class="main-content-result-card" v-for="(item, index) in address" v-bind:key = "item">
                             <div class='main-content-result-card-left'>
                                 <img src="@/assets/icone-lugar.svg" alt="Ícone de Localização">
-                                {{}}
                                <div class='main-content-result-card-left-info'>
-                                   <h3>Av. São Paulo, Zona 07</h3>
-                                   <p>Maringá - PR</p>
+                                   <h3>{{item.logradouro}}, {{item.complemento}}, {{item.bairro}}</h3>
+                                   <p>{{item.localidade}} - {{item.uf}}</p>
                                </div> 
-                                {{resultJSON}}
                             </div>
                             <div class='main-content-result-card-right'>
-                                <p>65015460</p>
-                                <img src="@/assets/icone-lixo.svg" alt="Ícone de demonstração para excluir o item. Uma lixeira.">
+                                <p>{{item.cep}}</p>
+                                <img @click.prevent="deleteAddress(index)" src="@/assets/icone-lixo.svg" alt="Ícone de demonstração para excluir o item. Uma lixeira.">
                             </div>      
                         </div>
                 </div>  
@@ -45,19 +43,16 @@ export default {
     data(){
         return{
             cep: null,
-            result: [],
-            resultObject: null,
-            resultJSON: {},
+            ceps: [],
+            address: [],
         }
     },
     methods:{
         addCep(){
-               this.result.push(this.cep)
-               this.resultObject = {...this.result}
+               this.ceps.push(this.cep)
         },
         getCep(){
-
-                for(const cep of this.result){
+                for(const cep of this.ceps){
                     this.getAddress(cep)
                 }       
         },
@@ -67,8 +62,11 @@ export default {
             const response = await fetch(link)
             const responseJSON = await response.json();
 
-            return  responseJSON ;
+            return this.address.push(responseJSON) ;
         },
+        deleteAddress(index){
+            this.address.splice(index)
+        }
     }
 }
 </script>
